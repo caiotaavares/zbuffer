@@ -31,14 +31,16 @@ void zbuffer::zbufferRender(const QSize &size, int offset)
     update();
 }
 
-double zbuffer::calculateCurve(double x, double y)
+QVector3D zbuffer::calculateCurve(double x, double y)
 {
-    return x * x + y;
+    double z = (x * x + y) / 50.0; // Reduz o impacto do crescimento quadrático
+    return QVector3D(x, y, z);
 }
 
-double zbuffer::calculatePlane(double x, double y)
+QVector3D zbuffer::calculatePlane(double x, double y)
 {
-    return 3 * x - 2 * y + 5;
+    double z = (3 * x - 2 * y + 5) / 10.0; // Normalização simples
+    return QVector3D(x, y, z);
 }
 
 QVector3D zbuffer::calculateCone(double t, double a)
@@ -56,25 +58,25 @@ std::tuple<std::vector<QVector3D>, std::vector<QColor>> zbuffer::build_objects()
     std::vector<QVector3D> points;
     std::vector<QColor> colors;
 
-    // Plano azul
+    // Curva azul
     for (int x = 10; x <= 31; ++x)
     {
         for (int y = 20; y <= 41; ++y)
         {
-            double z = calculatePlane(x, y);
-            points.push_back(QVector3D(x, y, z));
-            colors.push_back(QColor(0, 0, 255)); // Azul para o plano
+            QVector3D point = calculateCurve(x, y);
+            points.push_back(point);
+            colors.push_back(QColor(0, 0, 255)); // Azul
         }
     }
 
-    // Curva vermelha
+    // Plano
     for (int x = 50; x <= 101; ++x)
     {
         for (int y = 30; y <= 81; ++y)
         {
-            double z = calculateCurve(x, y);
-            points.push_back(QVector3D(x, y, z));
-            colors.push_back(QColor(255, 0, 0)); // Vermelho para a curva
+            QVector3D point = calculatePlane(x, y);
+            points.push_back(point);
+            colors.push_back(QColor(255, 0, 0)); // Vermelho
         }
     }
 
@@ -85,7 +87,7 @@ std::tuple<std::vector<QVector3D>, std::vector<QColor>> zbuffer::build_objects()
         {
             QVector3D point = calculateCone(t, a);
             points.push_back(point);
-            colors.push_back(QColor(255, 255, 0));
+            colors.push_back(QColor(255, 255, 0)); //Amare
         }
     }
 

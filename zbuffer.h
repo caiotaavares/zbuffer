@@ -17,8 +17,8 @@ class zbuffer : public QLabel
 public:
     zbuffer(QWidget *parent = nullptr);
 
-    double calculateCurve(double x, double y);
-    double calculatePlane(double x, double y);
+    QVector3D calculateCurve(double x, double y);
+    QVector3D calculatePlane(double x, double y);
 
     QVector3D calculateCone(double t, double a);
     QVector3D calculateSphere(double a, double b);
