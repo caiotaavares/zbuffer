@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
+    <width>680</width>
     <height>326</height>
    </rect>
   </property>
@@ -36,7 +36,7 @@
       <x>470</x>
       <y>10</y>
       <width>160</width>
-      <height>83</height>
+      <height>92</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -63,14 +63,27 @@
      </item>
     </layout>
    </widget>
+   <widget class="QCheckBox" name="autoRotate">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>110</y>
+      <width>161</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rotacionar</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>643</width>
-     <height>20</height>
+     <width>680</width>
+     <height>23</height>
     </rect>
    </property>
   </widget>

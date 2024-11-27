@@ -16,13 +16,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButtonRotate_clicked();
+    // void on_pushButtonRotate_clicked();
 
     void on_pushButtonRotateX_clicked();
 
     void on_pushButtonRotateY_clicked();
 
     void on_pushButtonRotatez_clicked();
+
+    void on_autoRotate_checkStateChanged(const Qt::CheckState &arg1);
 
 private:
     Ui::MainWindow *ui;

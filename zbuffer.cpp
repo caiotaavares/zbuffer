@@ -1,9 +1,22 @@
 #include "zbuffer.h"
 
-zbuffer::zbuffer(QWidget *parent) : QLabel(parent)
+#include <QTimer>
+
+zbuffer::zbuffer(QWidget *parent) : QLabel(parent), isRotating(false)
 {
     objects = build_objects();
-    zbufferRender(QSize(300, 300), 150);  // Use the correct function name
+    zbufferRender(QSize(300, 300), 150);
+
+    rotationTimer = new QTimer(this);
+    connect(rotationTimer, &QTimer::timeout, this, [this]() {
+        // Incrementos menores para rotação mais suave
+        rotate_objects_X(0.1);    // Reduzir de 1.0 para 0.1
+        rotate_objects_Y(0.1);
+        rotate_objects_Z(0.1);
+    });
+
+    // Timer mais rápido para mais frames
+    rotationTimer->setInterval(16);  // Aproximadamente 60 FPS
 }
 
 void zbuffer::zbufferRender(const QSize &size, int offset)
@@ -11,22 +24,19 @@ void zbuffer::zbufferRender(const QSize &size, int offset)
     int x = size.width();
     int y = size.height();
 
+    // Configuração do zbuffer
     zbuffer_.resize(x, std::vector<float>(y, std::numeric_limits<float>::infinity()));
 
-    // Reuse the QPainter and batch painting operations
-    QPainter painter(this);
-    render_objects(painter);
-
-    // Trigger a repaint
+    // Atualize o widget para redesenhar
     update();
 }
 
-double zbuffer::calculateAzul(double x, double y)
+double zbuffer::calculateCurve(double x, double y)
 {
     return x * x + y;
 }
 
-double zbuffer::calculateVermelho(double x, double y)
+double zbuffer::calculatePlane(double x, double y)
 {
     return 3 * x - 2 * y + 5;
 }
@@ -46,6 +56,28 @@ std::tuple<std::vector<QVector3D>, std::vector<QColor>> zbuffer::build_objects()
     std::vector<QVector3D> points;
     std::vector<QColor> colors;
 
+    // Plano azul
+    for (int x = 10; x <= 31; ++x)
+    {
+        for (int y = 20; y <= 41; ++y)
+        {
+            double z = calculatePlane(x, y);
+            points.push_back(QVector3D(x, y, z));
+            colors.push_back(QColor(0, 0, 255)); // Azul para o plano
+        }
+    }
+
+    // Curva vermelha
+    for (int x = 50; x <= 101; ++x)
+    {
+        for (int y = 30; y <= 81; ++y)
+        {
+            double z = calculateCurve(x, y);
+            points.push_back(QVector3D(x, y, z));
+            colors.push_back(QColor(255, 0, 0)); // Vermelho para a curva
+        }
+    }
+
     // Cone
     for (double a = 0; a < 4 * M_PI; a += 0.01)
     {
@@ -53,22 +85,22 @@ std::tuple<std::vector<QVector3D>, std::vector<QColor>> zbuffer::build_objects()
         {
             QVector3D point = calculateCone(t, a);
             points.push_back(point);
-            colors.push_back(QColor(255, 0, 0));
+            colors.push_back(QColor(255, 255, 0));
         }
     }
 
-    // Sphere
-    for (double a = 0; a < 4 * M_PI; a += 0.01)
+    // Esfera
+    for (double a = 0; a < 2 * M_PI; a += 0.01)
     {
-        for (double b = 0; b < 4 * M_PI; b += 0.01)
+        for (double b = 0; b < M_PI; b += 0.01)
         {
             QVector3D point = calculateSphere(a, b);
             points.push_back(point);
-            colors.push_back(QColor(255, 0, 255));
+            colors.push_back(QColor(0, 255, 0));
         }
     }
 
-    // Cube
+    // Cubo
     for (int x = -20; x < 21; ++x)
     {
         for (int y = -20; y < 21; ++y)
@@ -82,7 +114,7 @@ std::tuple<std::vector<QVector3D>, std::vector<QColor>> zbuffer::build_objects()
 
             for (int i = 0; i < 6; ++i)
             {
-                colors.push_back(QColor(255, 200, 55));
+                colors.push_back(QColor(255, 255, 255));
             }
         }
     }
@@ -168,6 +200,17 @@ void zbuffer::rotate_objects_Z(double angleZ)
     update();
 }
 
+void zbuffer::rotate_objects(double anglex, double angley, double anglez)
+{
+    if (!isRotating) {
+        rotationTimer->start();  // Inicia o timer
+        isRotating = true;
+    } else {
+        rotationTimer->stop();  // Para o timer
+        isRotating = false;
+    }
+}
+
 void zbuffer::render_objects(QPainter &painter)
 {
     auto [points, colors] = objects;
@@ -175,7 +218,7 @@ void zbuffer::render_objects(QPainter &painter)
     const int xOffset = width() / 2;
     const int yOffset = height() / 2;
 
-    // Create a vector of indices and sort them based on the Z-coordinate
+    // Ordena os pontos com base na coordenada Z
     std::vector<int> indices(points.size());
     std::iota(indices.begin(), indices.end(), 0);
 
@@ -183,20 +226,14 @@ void zbuffer::render_objects(QPainter &painter)
         return points[a].z() < points[b].z();
     });
 
-    // Begin the painting operations
-    painter.begin(this);
-
     for (int i : indices)
     {
-        // Set pen color
+        // Configura a cor
         painter.setPen(colors[i]);
 
-        // Draw point
+        // Desenha o ponto
         painter.drawPoint(points[i].x() + xOffset, points[i].y() + yOffset);
     }
-
-    // End the painting operations
-    painter.end();
 }
 
 void zbuffer::paintEvent(QPaintEvent *event)
@@ -204,5 +241,7 @@ void zbuffer::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 
     QPainter painter(this);
+
+    // Chama a função de renderização
     render_objects(painter);
 }

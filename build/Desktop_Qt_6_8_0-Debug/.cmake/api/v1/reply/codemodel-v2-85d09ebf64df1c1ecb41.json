@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-8a69001ccf6fc300ea5f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "zbuffer",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "zbuffer::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zbuffer-Debug-71a689b7667e20ff39b0.json",
+					"name" : "zbuffer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "zbuffer_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zbuffer_autogen-Debug-fefb18fe28b7ed01bfd5.json",
+					"name" : "zbuffer_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "zbuffer_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zbuffer_autogen_timestamp_deps-Debug-34c7417a8879701f9650.json",
+					"name" : "zbuffer_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/caiotavares/Documents/unesp/cg/zbuffer/build/Desktop_Qt_6_8_0-Debug",
+		"source" : "/home/caiotavares/Documents/unesp/cg/zbuffer"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

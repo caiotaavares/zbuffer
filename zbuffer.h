@@ -17,8 +17,9 @@ class zbuffer : public QLabel
 public:
     zbuffer(QWidget *parent = nullptr);
 
-    double calculateAzul(double x, double y);
-    double calculateVermelho(double x, double y);
+    double calculateCurve(double x, double y);
+    double calculatePlane(double x, double y);
+
     QVector3D calculateCone(double t, double a);
     QVector3D calculateSphere(double a, double b);
 
@@ -31,13 +32,14 @@ public:
     void rotate_objects_X(double angleX);
 
     void zbufferRender(const QSize &size, int offset); // Rename the function
-
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
     std::tuple<std::vector<QVector3D>, std::vector<QColor>> objects;
     std::vector<std::vector<float>> zbuffer_;
+    QTimer *rotationTimer;
+    bool isRotating;
 };
 
 #endif // ZBUFFER_H
